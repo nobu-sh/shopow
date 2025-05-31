@@ -1,20 +1,50 @@
-import { PropsWithChildren, useEffect, useState } from "react";
+import { PropsWithChildren, useEffect, useRef, useState } from "react";
 import Logo from "./assets/logo.min.webp"
 import { Link } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { interactedState } from "./states/interacted";
-import { cn } from "@udecode/cn";
+import { useRecoilState } from "recoil";
+import { readyState } from "./states/ready";
+import { cn, withRef } from "@udecode/cn";
 import { MouseIcon } from "lucide-react";
 import SloppyContainer from "./components/SloppyContainer";
 import { useRenderInterval } from "./hooks/use-render-interval";
 
+import TinyTestVideo from "./assets/tiny.mp4?inline"
+
 function Interactive() {
-  const [interacted, setInteracted] = useRecoilState(interactedState)
+  const [ready, setReady] = useRecoilState(readyState)
+  const [interacted, setInteracted] = useState(true)
   const [grabbing, setGrabbing] = useState(false)
+  const testRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!document.body.parentElement) return;
+    document.body.parentElement.style.overflow = interacted ? "auto" : "hidden"
+  }, [interacted])
+
+  useEffect(() => {
+    if (ready) return;
+    if (!testRef.current) return;
+    testRef.current.volume = 0.15;
+    testRef.current.muted = false;
+    testRef.current.playsInline = true;
+    
+    testRef.current.play()
+      .then(() => {
+        console.debug("Test video played successfully. Setting ready automatically.");
+        setReady(true);
+      })
+      .catch((error) => {
+        console.error("Failed to play test video. Setting interacted as false.", error)
+        setInteracted(false);
+      });
+  }, [ready, setReady])
 
   return (
     <div 
-      onClick={() => setInteracted(true)} 
+      onClick={() => {
+        setInteracted(true)
+        setReady(true)
+      }} 
       onMouseDown={(event) => {
         event.preventDefault();
         setGrabbing(true)
@@ -24,6 +54,7 @@ function Interactive() {
         setGrabbing(false)
         if (event.button !== 0) {
           setInteracted(true)
+          setReady(true)
         }
       }}
       onContextMenu={(event) => {
@@ -35,10 +66,11 @@ function Interactive() {
         grabbing && "cursor-grabbing"
       )}
     >
+      <video ref={testRef} className="absolute top-0 left-0 z-0 pointer-events-none opacity-0 w-0 h-0" src={TinyTestVideo} />
       <div className="flex flex-col gap-1 items-center ">
       <MouseIcon className="w-16 h-16 mb-4 animate-pulse text-[#fde1af]" />
-      <p className="text-xl text-[#fde1af]">Interactive Experience</p>
-      <p className="sepia text-[#968161]">Please click to Continue!</p>
+      <p className="text-xl animate-pulse text-[#fde1af]">Interactive Experience</p>
+      <p className="sepia animate-pulse text-[#968161]">Please click to Continue!</p>
       </div>
     </div>
   )
@@ -62,31 +94,66 @@ function GetInTouch() {
   )
 }
 
+const NavbarWrapper = withRef<"nav">(({ className, style, ...props }, reference) => {
+  const [fillBg, setFillBg] = useState(false);
+  const [fillAmount, setFillAmount] = useState(0);
+
+  useEffect(() => {
+    const scroll = () => {
+      // Get window height if we have scrolled down 1 window height then enable fill background
+      const scrolled = window.scrollY;
+      const target = window.innerHeight * 0.05;
+      if (scrolled >= target) {
+        setFillBg(true);
+      } else {
+        setFillBg(false);
+      }
+
+      // Scale fill amount from 0 to 1 based on the page height
+      setFillAmount(Math.min(0.9, scrolled / (window.innerHeight * 0.75)));
+    }
+
+    window.addEventListener("scroll", scroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", scroll)
+    }
+  }, [])
+
+  return (
+    <nav 
+      {...props}
+      ref={reference}
+      className={cn(
+        "fixed select-none top-0 left-0 w-screen z-40 h-32 transition-[height] duration-500 flex flex-row justify-between items-center bg-gradient-to-b from-[#000d04aa] to-transparent px-16",
+        // fillBg && "from-[#000d04ee] to-[#000d04ee] h-20 backdrop-blur-sm",
+        fillBg && "from-transparent to-transparent h-20 backdrop-blur-sm",
+        className
+      )} 
+      style={{
+        ...style,
+        backgroundColor: fillBg ? `rgba(0, 13, 4, ${fillAmount})` : "transparent",
+      }}
+    />
+  )
+})
+
 function Navbar() {
   return (
-    <nav className="fixed select-none top-0 left-0 w-screen z-40 h-32 flex flex-row justify-between items-center bg-gradient-to-b from-[#000d04aa] to-transparent px-16 p-6">
+    <NavbarWrapper>
       <div className="flex flex-row items-center gap-16">
         <Link to="/#home" className="transition duration-300 hover:sepia hover:brightness-75">
           <img src={Logo} className="h-14 w-auto" />
         </Link>
-        <Link to="/#about" className="font-fun transition duration-300 text-lg hover:text-[#fde1af]">About Me</Link>
-        <Link to="/#featured" className="font-fun transition duration-300 text-lg hover:text-[#fde1af]">Featured Works</Link>
-        <Link to="/#projects" className="font-fun transition duration-300 text-lg hover:text-[#fde1af]">Projects</Link>
+        <Link to="/#about" className="font-fun transition duration-300 hover:text-[#fde1af]">About Me</Link>
+        <Link to="/#featured" className="font-fun transition duration-300 hover:text-[#fde1af]">Featured Works</Link>
+        {/* <Link to="/#projects" className="font-fun transition duration-300 hover:text-[#fde1af]">Projects</Link> */}
       </div>
       <GetInTouch />
-      {/* <Link to="/#contact" className="font-fun transition duration-300 hover:sepia hover:brightness-75 text-xl border border-neutral-400 rounded-lg py-2 px-4">Get in Touch</Link> */}
-    </nav>
+    </NavbarWrapper>
   )
 }
 
 export default function Layout({ children }: PropsWithChildren) {
-  const interacted = useRecoilValue(interactedState)
-
-  useEffect(() => {
-    if (!document.body.parentElement) return;
-    document.body.parentElement.style.overflow = interacted ? "auto" : "hidden"
-  }, [interacted])
-
   return (
     <main className="size-full">
       <Interactive />

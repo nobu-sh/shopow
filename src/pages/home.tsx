@@ -1,11 +1,11 @@
 import HeaderVideo from "../assets/banner_vid.mp4"
 import HeaderVideoShort from "../assets/banner_short.mp4"
 import HeaderThumb from "../assets/header_thumb.jpg"
-import VRCat from "../assets/vrcat.min.webp"
+import VRCat from "../assets/vrcat-stare.webp"
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@udecode/cn";
 import { useRecoilValue } from "recoil";
-import { interactedState } from "../states/interacted";
+import { readyState } from "../states/ready";
 import { ArrowDown, ExternalLink, MouseIcon } from "lucide-react";
 import SloppyContainer from "../components/SloppyContainer";
 import { Carousel, CarouselContent, CarouselItem } from "../components/carousel";
@@ -14,23 +14,40 @@ import { useRenderInterval } from "../hooks/use-render-interval";
 import { CarouselWorld, CarouselWorlds } from "../constants";
 
 function HeaderVideoSection() {
-  const interacted = useRecoilValue(interactedState)
-  const [ended, setEnded] = useState(false)
+  const ready = useRecoilValue(readyState)
+  const [playing, setPlaying] = useState(false)
+  const [playNextAt, setPlayNextAt] = useState<number | null>(null)
+
   const refLong = useRef<HTMLVideoElement>(null)
   const refShort = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (ended) {
-      refShort.current?.play()
-    }
-  }, [ended])
+    if (!ready) return;
+    if (!refLong.current) return;
+    
+    refLong.current.muted = false;
+    refLong.current.volume = 0.15;
+    refLong.current.play();
+  }, [ready])
 
   useEffect(() => {
-    if (!interacted || !refLong.current) return;
-    refLong.current.volume = 0.15
-    refLong.current.play()
-  }, [interacted]);
+    if (playNextAt === null) return;
 
+    // Start subtracting seconds from the play next at once it hits 0 we play the refLong then set play next at to null
+    const timeout = setTimeout(() => {
+      if (refLong.current) {
+        refLong.current.muted = true;
+        refLong.current.play();
+      }
+      setPlayNextAt(null);
+    }, playNextAt * 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    }
+  }, [playNextAt])
+
+  // h-[75vh]
   return (
     <header className="relative select-none flex w-full flex-col aspect-[2.5/1]" id="home">
       <div className="header-video-mask absolute size-full">
@@ -38,6 +55,7 @@ function HeaderVideoSection() {
           ref={refShort}
           disablePictureInPicture
           disableRemotePlayback
+          autoPlay
           muted
           loop
           className="absolute size-full object-cover"
@@ -49,24 +67,37 @@ function HeaderVideoSection() {
           disablePictureInPicture
           disableRemotePlayback
           className={cn(
-            "absolute size-full object-cover transition-opacity duration-500 opacity-100",
-            ended && "opacity-0"
+            "absolute size-full object-cover !transition-none opacity-0",
+            playing && "opacity-100 animate-in fade-in-0 duration-1000"
           )}
           controls={false}
           poster={HeaderThumb}
           src={HeaderVideo}
+          onPlay={() => {
+            setPlaying(true)
+          }}
           onEnded={() => {
-            setEnded(true)
+            if (refShort.current) {
+              refShort.current.currentTime = 0;
+              if (refShort.current.paused) {
+                refShort.current.play();
+              }
+            }
+            setPlaying(false);
+
+            // Set a random playback between 1 and 5 minutes (60 to 300 seconds)
+            const randomPlayback = Math.floor(Math.random() * (300 - 60 + 1)) + 60;
+            setPlayNextAt(randomPlayback);
           }}
         />
         <div className="header-video-gradient absolute size-full" />
       </div>
       <div className="relative flex size-full max-w-7xl flex-1 flex-col px-16 justify-center gap-10">
-        <div className={cn("transition, duration-500 mix-blend-exclusion brightness-200", ended && "mix-blend-hard-light")}>
-          <h1 className="font-semibold leading-tight text-7xl font-fun">
+        <div className="transition, duration-500 brightness-200 mix-blend-hard-light">
+          <h1 className="font-semibold leading-tight text-7xl">
             Angelo
           </h1>
-          <h1 className="font-semibold -mt-4 leading-tight text-7xl font-fun">
+          <h1 className="font-semibold -mt-4 leading-tight text-7xl">
             Lanticse-Peralta
           </h1>
           <p className="text-[#968161] ml-1.5 mt-2 opacity-75 -mb-8 font-fun font-bold tracking-wide text-xl">3D Artist // Level Designer // Environmental Artist</p>
@@ -90,7 +121,8 @@ function WorldDisplay({ world }: { world: CarouselWorld }) {
 
   return (
     <SloppyContainer
-      containerClassName="group stroke-[#fde1af] hover:stroke-[#968161] p-2 transition cursor-pointer"
+      containerClassName="group fill-transparent stroke-[#968161] hover:stroke-[#e6cb9e] p-2 transition cursor-pointer"
+      renderSvgOnTop
       sizeMode="parent"
       sloppiness={5}
       waviness={2}
@@ -100,13 +132,13 @@ function WorldDisplay({ world }: { world: CarouselWorld }) {
     >
       <a href={world.url} target="_blank">
         <img 
-          className="transition absolute top-0 left-0 size-full rounded-[24px] scale-[101%] brightness-95 group-hover:sepia group-hover:brightness-[35%] object-cover object-center mix-blend-lighten"
+          className="transition absolute top-0 left-0 size-full rounded-[24px] scale-[101%] brightness-90 group-hover:brightness-[20%] object-cover object-center"
           src={world.src}
         />
         <div className="absolute top-2 left-2 flex flex-col w-[calc(100%-1rem)] h-[calc(100%-1rem)] overflow-hidden">
           <div className="size-full relative flex-1 flex flex-col items-start p-4 justify-end transition opacity-0 scale-105 group-hover:opacity-100 group-hover:scale-100">
-            <h2 className="text-2xl font-fun font-bold">{world.title}</h2>
-            <p className="text-[#cbb696] font-fun line-clamp-1">{world.description}</p>
+            <h2 className="text-2xl font-bold font-fun">{world.title}</h2>
+            <p className="text-[#cbb696] text-sm line-clamp-1">{world.description}</p>
             <ExternalLink className="absolute top-4 right-4 size-6 text-[#fde1af]" />
           </div>
         </div>
@@ -139,54 +171,60 @@ function WorldsCarousel() {
 
 function AboutMe() {
   return (
-    <div className="px-16 w-full grid grid-cols-2 gap-6 items-center">
-      <div className="flex flex-col gap-4 font-fun text-[#c8b494] max-w-lg h-fit">
-        <h2 className="font-fun text-3xl font-bold text-[#e6d0af]">About Me</h2>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores dolorem ullam natus voluptates.</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores dolorem ullam natus voluptates.</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores dolorem ullam natus voluptates.</p>
+    <div className="flex flex-col p-16 items-center">
+      <div className="w-full grid grid-cols-2 gap-6 items-center max-w-[84rem]">
+      <div className="flex flex-col gap-4 text-[#c8b494] *:max-w-xl text-lg h-fit">
+        <h2 className="text-4xl font-bold mb-2 font-fun text-[#e6d0af]">About Me</h2>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores dolorem ullam natus voluptates. tenetur maiores dolorem ullam natus voluptates.</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores.</p>
+        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores dolorem ullam natus voluptates. tenetur maiores dolorem.</p>
       </div>
-      <img className="" src={VRCat} alt="VRCat" />
+      <img className="max-w-xl ml-auto" src={VRCat} alt="VRCat" />
+    </div>
     </div>
   )
 }
 
 function FeaturedWorks() {
   return (
-    <div className="flex flex-col gap-8 py-16 px-16 bg-gradient-to-b from-[#000d04] via-[#001204] to-[#000d04]">
-      <h2 className="font-fun text-3xl text-right font-bold text-[#e6d0af]">Featured Works</h2>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+    <div className="flex flex-col p-16 items-center bg-gradient-to-b from-[#000d04] via-[#001204] to-[#000d04]">
+      <div className="flex flex-col gap-8 w-full max-w-[84rem]">
+        <h2 className="font-fun text-4xl mb-2 text-right font-bold text-[#e6d0af]">Featured Works</h2>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   )
 }
 
 function ContactMe() {
   return (
-    <div className="flex flex-col gap-8 px-16">
-      <h2 className="font-fun text-3xl text-center font-bold text-[#e6d0af]">Contact Me</h2>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+    <div className="flex flex-col p-16 items-center">
+      <div className="flex flex-col gap-8 w-full max-w-[84rem]">
+        <h2 className="font-fun text-4xl mb-2 text-center font-bold text-[#e6d0af]">Get In Touch</h2>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   )
 }
@@ -205,12 +243,14 @@ function Footer() {
 
 export default function Home() {
   return (
-    <div className="flex flex-col size-full flex-1 gap-16 *:shrink-0">
-      <div className="flex flex-col w-full">
-        <HeaderVideoSection />
-        <ScrollToViewMore />
+    <div className="flex flex-col size-full flex-1 gap-32 *:shrink-0">
+      <div className="flex flex-col size-full flex-1 gap-16 *:shrink-0">
+        <div className="flex flex-col w-full">
+          <HeaderVideoSection />
+          <ScrollToViewMore />
+        </div>
+        <WorldsCarousel />
       </div>
-      <WorldsCarousel />
       <AboutMe />
       <FeaturedWorks />
       <ContactMe />
