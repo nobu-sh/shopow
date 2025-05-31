@@ -15,11 +15,27 @@ function Interactive() {
   const [interacted, setInteracted] = useState(true)
   const [grabbing, setGrabbing] = useState(false)
   const testRef = useRef<HTMLVideoElement>(null);
+  
 
   useEffect(() => {
     if (!document.body.parentElement) return;
     document.body.parentElement.style.overflow = interacted ? "auto" : "hidden"
   }, [interacted])
+
+  // useEffect(() => {
+  //   // Check if the URL has a hash
+  //   const hasHash = location.hash.length > 0;
+  //   setHashInUrl(hasHash);
+
+  //   // If there is a hash in the URL, set interacted to true
+  //   if (hasHash) {
+  //     setInteracted(true);
+  //     setReady(true);
+
+  //     // If there is a hash then we dont show the interactive screen but we need to still listen for an interaction so we can autoplay.
+
+  //   }
+  // }, [location, setReady])
 
   useEffect(() => {
     if (ready) return;
@@ -27,16 +43,35 @@ function Interactive() {
     testRef.current.volume = 0.15;
     testRef.current.muted = false;
     testRef.current.playsInline = true;
-    
+
+    const events = ["click", "touchstart", "keydown", "mousedown", "pointerdown"] as const;
+    const onInteract = () => {
+      setReady(true);
+      setInteracted(true);
+    }
+
     testRef.current.play()
       .then(() => {
         console.debug("Test video played successfully. Setting ready automatically.");
         setReady(true);
       })
-      .catch((error) => {
-        console.debug("Failed to play test video. Setting interacted as false.", error)
-        setInteracted(false);
+      .catch(() => {
+        const isHashInUrl = location.hash.length > 0;
+        if (isHashInUrl) {
+          console.debug("Hash is present in URL, bypassing interaction requirement.");
+
+          // Register event listeners for a valid interaction for autoplay
+          events.forEach(event => document.addEventListener(event, onInteract, { once: true }))
+        } else {
+           console.debug("Failed to play test video. Setting interacted as false.");
+          setInteracted(false);
+        }
       });
+
+    return () => {
+      // Clean up event listeners
+      events.forEach(event => document.removeEventListener(event, onInteract));
+    }
   }, [ready, setReady])
 
   return (
@@ -62,7 +97,7 @@ function Interactive() {
       }}
       className={cn(
         "fixed top-0 left-0 w-screen h-screen z-50 select-none cursor-grab bg-[#000d04f5] backdrop-blur-md transition-opacity duration-500 flex flex-col justify-center items-center",
-        interacted && "opacity-0 pointer-events-none",
+        (interacted) && "opacity-0 pointer-events-none",
         grabbing && "cursor-grabbing"
       )}
     >
