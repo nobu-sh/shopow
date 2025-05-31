@@ -130,7 +130,7 @@ function WorldDisplay({ world }: { world: CarouselWorld }) {
       borderRadius={25}
       asChild
     >
-      <a href={world.url} target="_blank">
+      <a href={world.url} target="_blank" aria-label={`More about ${world.title}`} >
         <img 
           className="transition absolute top-0 left-0 size-full rounded-[24px] scale-[101%] brightness-90 group-hover:brightness-[20%] object-cover object-center"
           src={world.src}
@@ -234,7 +234,7 @@ function Footer() {
   return (
     <footer className="mt-auto select-none w-full p-16 pb-8 bg-gradient-to-b from-transparent to-black flex flex-row items-center">
       <p className="text-xs text-[#a08e6f] font-fun">© Shopow 2025 - All Rights Reserved</p>
-      <a href="https://github.com/nobu-sh/shopow" target="_blank" className="flex transition text-[#8f516c] hover:text-[#e594b7] flex-row gap-2 ml-auto">
+      <a href="https://github.com/nobu-sh/shopow" target="_blank" className="flex transition text-[#8f516c] hover:text-[#e594b7] flex-row gap-2 ml-auto" aria-label="View source code on GitHub">
         <p className="text-xs font-fun">made with {"<3"} by nobu-sh</p>
         <ExternalLink className="size-3" />
       </a>
