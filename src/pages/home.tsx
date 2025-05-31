@@ -7,7 +7,7 @@ import { cn } from "@udecode/cn";
 import { useRecoilValue } from "recoil";
 import { readyState } from "../states/ready";
 import { ArrowDown, ExternalLink, MouseIcon } from "lucide-react";
-import SloppyContainer from "../components/SloppyContainer";
+import SloppyContainer from "../components/container";
 import { Carousel, CarouselContent, CarouselItem } from "../components/carousel";
 import Autoplay from "embla-carousel-autoplay"
 import { useRenderInterval } from "../hooks/use-render-interval";
@@ -130,15 +130,15 @@ function WorldDisplay({ world }: { world: CarouselWorld }) {
       borderRadius={25}
       asChild
     >
-      <a href={world.url} target="_blank" aria-label={`More about ${world.title}`} >
+      <a href={world.url} target="_blank" aria-label={`More about ${world.name}`} >
         <img 
           className="transition absolute top-0 left-0 size-full rounded-[24px] scale-[101%] brightness-90 group-hover:brightness-[20%] object-cover object-center"
-          src={world.src}
-          alt={world.title}
+          src={world.thumbnail + "?height=1024"}
+          alt={world.name}
         />
         <div className="absolute top-2 left-2 flex flex-col w-[calc(100%-1rem)] h-[calc(100%-1rem)] overflow-hidden">
           <div className="size-full relative flex-1 flex flex-col items-start p-4 justify-end transition opacity-0 scale-105 group-hover:opacity-100 group-hover:scale-100">
-            <h2 className="text-2xl font-bold font-fun">{world.title}</h2>
+            <h2 className="text-2xl font-bold font-fun">{world.name}</h2>
             <p className="text-[#cbb696] text-sm line-clamp-1">{world.description}</p>
             <ExternalLink className="absolute top-4 right-4 size-6 text-[#fde1af]" />
           </div>
@@ -174,11 +174,11 @@ function AboutMe() {
   return (
     <div className="flex flex-col p-16 items-center">
       <div className="w-full grid grid-cols-2 gap-6 items-center max-w-[84rem]">
-      <div className="flex flex-col gap-4 text-[#c8b494] *:max-w-xl text-lg h-fit">
+      <div className="flex flex-col gap-4 text-[#a5967e] *:max-w-xl text-lg h-fit">
         <h2 className="text-4xl font-bold mb-2 font-fun text-[#e6d0af]">About Me</h2>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores dolorem ullam natus voluptates. tenetur maiores dolorem ullam natus voluptates.</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores.</p>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At quaerat nulla itaque, eveniet expedita sequi repudiandae aliquid magni ea impedit iure maxime sint eaque tenetur maiores dolorem ullam natus voluptates. tenetur maiores dolorem.</p>
+        <p>With 2+ years of experience in immersive 3D world design, I specialize in crafting standout environments for VR—especially VRChat. My work blends technical precision with creative flair, and has been recognized across the VRChat community and beyond.</p>
+        <p>I’ve built 25+ worlds—five officially VRChat-approved—including hits like <i>Crypt Babylonica</i> and <i>Aeterna Visio Nocturne</i>. Several reached #1 on the Popular tab, with three surpassing 100k visits and 10k favorites. Collectively, my projects have drawn over 1 million visits and have been featured in VRChat promo materials, developer updates, and the Pico 4 launch.</p>
+        <p>My collaborations span HashStudios LLC, Dubby.gg, VR events like VKET Winter 2024, and galleries in Tokyo and London. I’ve also led a VRChat community of 3,000+, run a Creator Economy Store, and been honored with awards including Spookality (twice) and VRCA 2024 nominations.</p>
       </div>
       <img className="max-w-xl ml-auto" src={VRCat} alt="VRCat" />
     </div>

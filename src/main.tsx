@@ -1,11 +1,11 @@
 import { Fragment, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 import Layout from "./layout"
 import Home from "./pages/home"
-import NotFound from "./pages/notfound"
 import { RecoilRoot } from "recoil"
+
+import './index.css'
 
 const router = createBrowserRouter([
   {
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
       },
       {
         path: "*",
-        element: <NotFound />
+        element: <Home />
       }
     ]
   }

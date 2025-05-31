@@ -5,7 +5,7 @@ import { useRecoilState } from "recoil";
 import { readyState } from "./states/ready";
 import { cn, withRef } from "@udecode/cn";
 import { MouseIcon } from "lucide-react";
-import SloppyContainer from "./components/SloppyContainer";
+import SloppyContainer from "./components/container";
 import { useRenderInterval } from "./hooks/use-render-interval";
 
 import TinyTestVideo from "./assets/tiny.mp4?inline"
@@ -144,8 +144,8 @@ function Navbar() {
         <Link to="/#home" className="transition duration-300 hover:sepia hover:brightness-75">
           <img src={Logo} alt="Shopow" className="h-14 w-auto" />
         </Link>
-        <Link to="/#about" className="font-fun transition duration-300 hover:text-[#fde1af]">About Me</Link>
-        <Link to="/#featured" className="font-fun transition duration-300 hover:text-[#fde1af]">Featured Works</Link>
+        <Link to="/#about" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">About Me</Link>
+        <Link to="/#featured" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">Featured Works</Link>
         {/* <Link to="/#projects" className="font-fun transition duration-300 hover:text-[#fde1af]">Projects</Link> */}
       </div>
       <GetInTouch />
