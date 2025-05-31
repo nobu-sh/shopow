@@ -1,6 +1,6 @@
 import HeaderVideo from "../assets/banner_vid.mp4"
 import HeaderVideoShort from "../assets/banner_short.mp4"
-import HeaderThumb from "../assets/header_thumb.jpg"
+import HeaderThumb from "../assets/header_thumb.webp"
 import VRCat from "../assets/vrcat-stare.webp"
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@udecode/cn";
