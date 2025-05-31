@@ -134,6 +134,7 @@ function WorldDisplay({ world }: { world: CarouselWorld }) {
         <img 
           className="transition absolute top-0 left-0 size-full rounded-[24px] scale-[101%] brightness-90 group-hover:brightness-[20%] object-cover object-center"
           src={world.src}
+          alt={world.title}
         />
         <div className="absolute top-2 left-2 flex flex-col w-[calc(100%-1rem)] h-[calc(100%-1rem)] overflow-hidden">
           <div className="size-full relative flex-1 flex flex-col items-start p-4 justify-end transition opacity-0 scale-105 group-hover:opacity-100 group-hover:scale-100">

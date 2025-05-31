@@ -142,7 +142,7 @@ function Navbar() {
     <NavbarWrapper>
       <div className="flex flex-row items-center gap-16">
         <Link to="/#home" className="transition duration-300 hover:sepia hover:brightness-75">
-          <img src={Logo} className="h-14 w-auto" />
+          <img src={Logo} alt="Shopow" className="h-14 w-auto" />
         </Link>
         <Link to="/#about" className="font-fun transition duration-300 hover:text-[#fde1af]">About Me</Link>
         <Link to="/#featured" className="font-fun transition duration-300 hover:text-[#fde1af]">Featured Works</Link>
