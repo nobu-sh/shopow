@@ -1,7 +1,8 @@
 import HeaderVideo from "../assets/banner_vid.mp4"
 import HeaderVideoShort from "../assets/banner_short.mp4"
 import HeaderThumb from "../assets/header_thumb.webp"
-import VRCat from "../assets/vrcat-stare.webp"
+import VRCatStare from "../assets/vrcat-stare.webp"
+import VRCatHappy from "../assets/vrcat-happy.webp"
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@udecode/cn";
 import { useRecoilValue } from "recoil";
@@ -171,6 +172,8 @@ function WorldsCarousel() {
 }
 
 function AboutMe() {
+  const [grabbing, setGrabbing] = useState(false);
+
   return (
     <div className="flex flex-col p-16 items-center">
       <div className="w-full grid grid-cols-2 gap-6 items-center max-w-[84rem]">
@@ -180,7 +183,20 @@ function AboutMe() {
         <p>I’ve built 25+ worlds—five officially VRChat-approved—including hits like <i>Crypt Babylonica</i> and <i>Aeterna Visio Nocturne</i>. Several reached #1 on the Popular tab, with three surpassing 100k visits and 10k favorites. Collectively, my projects have drawn over 1 million visits and have been featured in VRChat promo materials, developer updates, and the Pico 4 launch.</p>
         <p>My collaborations span HashStudios LLC, Dubby.gg, VR events like VKET Winter 2024, and galleries in Tokyo and London. I’ve also led a VRChat community of 3,000+, run a Creator Economy Store, and been honored with awards including Spookality (twice) and VRCA 2024 nominations.</p>
       </div>
-      <img className="max-w-xl ml-auto" src={VRCat} alt="VRCat" />
+      <div 
+        className={cn("group relative cursor-grab", grabbing && "cursor-grabbing")}
+        onMouseDown={(event) => {
+          event.preventDefault();
+          setGrabbing(true)
+        }} 
+        onMouseUp={(event) => {
+          event.preventDefault();
+          setGrabbing(false)
+        }}
+      >
+        <img className="max-w-xl ml-auto relative group-hover:opacity-0" src={VRCatStare} alt="VRCatStare" />
+        <img className="max-w-xl ml-auto opacity-0 group-hover:opacity-100 absolute right-0 top-0" src={VRCatHappy} alt="VRCatHappy" />
+      </div>
     </div>
     </div>
   )
