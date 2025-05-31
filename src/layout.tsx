@@ -34,7 +34,7 @@ function Interactive() {
         setReady(true);
       })
       .catch((error) => {
-        console.error("Failed to play test video. Setting interacted as false.", error)
+        console.debug("Failed to play test video. Setting interacted as false.", error)
         setInteracted(false);
       });
   }, [ready, setReady])
