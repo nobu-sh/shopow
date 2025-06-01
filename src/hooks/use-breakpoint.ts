@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import * as React from "react";
 
 const PresetBreakpoints = {
   sm: 640,
@@ -11,9 +11,9 @@ const PresetBreakpoints = {
 export type PresetBreakpoint = keyof typeof PresetBreakpoints;
 export type BreakpointCalculator = () => boolean;
 export function useBreakpoint(calculator: BreakpointCalculator | PresetBreakpoint) {
-  const [isBreakpoint, setIsBreakpoint] = useState<boolean>(false);
+  const [isBreakpoint, setIsBreakpoint] = React.useState<boolean>(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const handleResize = () => {
       const newResult = typeof calculator === "string" 
         ? window.innerWidth < PresetBreakpoints[calculator] 
@@ -21,7 +21,7 @@ export function useBreakpoint(calculator: BreakpointCalculator | PresetBreakpoin
       if (newResult !== isBreakpoint) {
         setIsBreakpoint(newResult);
       }
-    };
+    }
 
     // Initial check
     handleResize();
@@ -32,7 +32,7 @@ export function useBreakpoint(calculator: BreakpointCalculator | PresetBreakpoin
     // Cleanup on unmount
     return () => {
       window.removeEventListener("resize", handleResize);
-    };
+    }
   }, [calculator, isBreakpoint, setIsBreakpoint]);
 
   return isBreakpoint;

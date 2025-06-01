@@ -1,8 +1,8 @@
+import * as React from "react";
 import { cn, withRef } from "@udecode/cn";
 import { useCanAutoplay } from "../hooks/use-can-autoplay";
 import { MouseIcon } from "lucide-react";
 import { useBreakpoint } from "../hooks/use-breakpoint";
-import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 export const InteractiveExperienceOverlay = withRef<"div">(({ className, ...props }, reference) => {
@@ -10,11 +10,11 @@ export const InteractiveExperienceOverlay = withRef<"div">(({ className, ...prop
   const canAutoplay = useCanAutoplay();
   const location = useLocation();
 
-  const hide = useMemo(() =>
+  const hide = React.useMemo(() =>
     small || canAutoplay !== false || location.hash.length > 0, 
   [small, canAutoplay, location]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!document.body.parentElement) return;
     document.body.parentElement.style.overflow = hide ? "auto" : "hidden";
   }, [hide]);
@@ -35,5 +35,5 @@ export const InteractiveExperienceOverlay = withRef<"div">(({ className, ...prop
         <p className="sepia animate-pulse text-[#968161]">Please click to Continue!</p>
       </div>
     </div>
-  )
-})
+  );
+});

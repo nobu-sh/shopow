@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 
 export function useDoOnce(test: boolean | undefined | null, callback: React.EffectCallback, deps: React.DependencyList = []) {
   const didRun = React.useRef(false);
@@ -8,5 +8,6 @@ export function useDoOnce(test: boolean | undefined | null, callback: React.Effe
       callback();
       didRun.current = true;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [test, callback, ...deps]);
 }

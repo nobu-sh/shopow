@@ -1,23 +1,24 @@
-import { Fragment, StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
-import Layout from "./layout"
-import Home from "./pages/home"
-import { RecoilRoot } from "recoil"
+import * as React from "react";
+import { RecoilRoot } from "recoil";
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
-import './index.css'
+import Layout from "./layout";
+import Home from "./pages/home";
+
+import "./index.css";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Fragment>
+      <React.Fragment>
         <RecoilRoot>
           <Layout>
             <Outlet />
           </Layout>
         </RecoilRoot>
-      </Fragment>
+      </React.Fragment>
     ),
     children: [
       {
@@ -30,10 +31,10 @@ const router = createBrowserRouter([
       }
     ]
   }
-])
+]);
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>,
-)
+  </React.StrictMode>,
+);

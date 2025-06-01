@@ -1,29 +1,29 @@
+import * as React from "react";
 import { cn } from "@udecode/cn";
-import { useRef, useState } from "react";
 import { ArrowDown, ExternalLink, MouseIcon } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem } from "../components/carousel";
 import { useRenderInterval } from "../hooks/use-render-interval";
 import { CarouselWorld, CarouselWorlds } from "../constants";
 import { useCanAutoplay } from "../hooks/use-can-autoplay";
-import SloppyContainer from "../components/sloppy-container";
-import Autoplay from "embla-carousel-autoplay";
-
-import HeaderVideo from "../assets/banner_vid.mp4"
-import HeaderVideoShort from "../assets/banner_short.mp4"
-import HeaderThumb from "../assets/header_thumb.webp"
-import VRCatStare from "../assets/vrcat-stare.webp"
-import VRCatHappy from "../assets/vrcat-happy.webp"
 import { useBreakpoint } from "../hooks/use-breakpoint";
 import { useDoOnce } from "../hooks/use-do-once";
 import { useDoAt } from "../hooks/use-do-at";
+import SloppyContainer from "../components/sloppy-container";
+import Autoplay from "embla-carousel-autoplay";
+
+import HeaderVideo from "../assets/banner_vid.mp4";
+import HeaderVideoShort from "../assets/banner_short.mp4";
+import HeaderThumb from "../assets/header_thumb.webp";
+import VRCatStare from "../assets/vrcat-stare.webp";
+import VRCatHappy from "../assets/vrcat-happy.webp";
 
 function HeaderVideoSection() {
   const canAutoplay = useCanAutoplay();
-  const [playing, setPlaying] = useState(false);
-  const [playNextAt, setPlayNextAt] = useState<number | null>(null);
+  const [playing, setPlaying] = React.useState(false);
+  const [playNextAt, setPlayNextAt] = React.useState<number | null>(null);
 
-  const refLong = useRef<HTMLVideoElement>(null);
-  const refShort = useRef<HTMLVideoElement>(null);
+  const refLong = React.useRef<HTMLVideoElement>(null);
+  const refShort = React.useRef<HTMLVideoElement>(null);
 
   useDoOnce(canAutoplay, () => {
     if (!refLong.current) return;
@@ -149,7 +149,7 @@ function WorldsCarousel() {
       opts={{ loop: true, dragFree: true }} 
       plugins={[
         Autoplay({
-          delay: 3000,
+          delay: 4000,
           stopOnInteraction: true
         })
       ]}>
@@ -165,32 +165,32 @@ function WorldsCarousel() {
 }
 
 function AboutMe() {
-  const [grabbing, setGrabbing] = useState(false);
+  const [grabbing, setGrabbing] = React.useState(false);
 
   return (
     <div className="flex flex-col lg:p-16 p-4 items-center overflow-hidden">
       <div className="w-full grid lg:grid-cols-2 lg:gap-0 max-[440px]:gap-4 gap-24 grid-cols-1 items-center max-w-[84rem]">
-      <div className="flex flex-col sm:gap-4 gap-2 text-[#a5967e] *:max-w-xl sm:text-lg h-fit">
-        <h2 className="sm:text-4xl text-2xl font-bold mb-2 font-fun text-[#e6d0af]">About Me</h2>
-        <p>With 2+ years of experience in immersive 3D world design, I specialize in crafting standout environments for VR—especially VRChat. My work blends technical precision with creative flair, and has been recognized across the VRChat community and beyond.</p>
-        <p>I’ve built 25+ worlds—five officially VRChat-approved—including hits like <i>Crypt Babylonica</i> and <i>Aeterna Visio Nocturne</i>. Several reached #1 on the Popular tab, with three surpassing 100k visits and 10k favorites. Collectively, my projects have drawn over 1 million visits and have been featured in VRChat promo materials, developer updates, and the Pico 4 launch.</p>
-        <p>My collaborations span HashStudios LLC, Dubby.gg, VR events like VKET Winter 2024, and galleries in Tokyo and London. I’ve also led a VRChat community of 3,000+, run a Creator Economy Store, and been honored with awards including Spookality (twice) and VRCA 2024 nominations.</p>
+        <div className="flex flex-col sm:gap-4 gap-2 text-[#a5967e] *:max-w-xl sm:text-lg h-fit">
+          <h2 className="sm:text-4xl text-2xl font-bold mb-2 font-fun text-[#e6d0af]">About Me</h2>
+          <p>With 2+ years of experience in immersive 3D world design, I specialize in crafting standout environments for VR—especially VRChat. My work blends technical precision with creative flair, and has been recognized across the VRChat community and beyond.</p>
+          <p>I’ve built 25+ worlds—five officially VRChat-approved—including hits like <i>Crypt Babylonica</i> and <i>Aeterna Visio Nocturne</i>. Several reached #1 on the Popular tab, with three surpassing 100k visits and 10k favorites. Collectively, my projects have drawn over 1 million visits and have been featured in VRChat promo materials, developer updates, and the Pico 4 launch.</p>
+          <p>My collaborations span HashStudios LLC, Dubby.gg, VR events like VKET Winter 2024, and galleries in Tokyo and London. I’ve also led a VRChat community of 3,000+, run a Creator Economy Store, and been honored with awards including Spookality (twice) and VRCA 2024 nominations.</p>
+        </div>
+        <div 
+          className={cn("group relative right-[5%] lg:-right-[15%] xl:right-0 cursor-grab h-64 min-[450px]:h-48 lg:h-full", grabbing && "cursor-grabbing")}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            setGrabbing(true);
+          }} 
+          onMouseUp={(event) => {
+            event.preventDefault();
+            setGrabbing(false);
+          }}
+        >
+          <img className="max-w-xl w-full ml-auto group-hover:opacity-0 absolute right-0 top-1/2 -translate-y-1/2" src={VRCatStare} alt="VRCatStare" />
+          <img className="max-w-xl w-full ml-auto opacity-0 group-hover:opacity-100 absolute right-0 top-1/2 -translate-y-1/2" src={VRCatHappy} alt="VRCatHappy" />
+        </div>
       </div>
-      <div 
-        className={cn("group relative right-[5%] lg:-right-[15%] xl:right-0 cursor-grab h-64 min-[450px]:h-48 lg:h-full", grabbing && "cursor-grabbing")}
-        onMouseDown={(event) => {
-          event.preventDefault();
-          setGrabbing(true);
-        }} 
-        onMouseUp={(event) => {
-          event.preventDefault();
-          setGrabbing(false);
-        }}
-      >
-        <img className="max-w-xl w-full ml-auto group-hover:opacity-0 absolute right-0 top-1/2 -translate-y-1/2" src={VRCatStare} alt="VRCatStare" />
-        <img className="max-w-xl w-full ml-auto opacity-0 group-hover:opacity-100 absolute right-0 top-1/2 -translate-y-1/2" src={VRCatHappy} alt="VRCatHappy" />
-      </div>
-    </div>
     </div>
   );
 }

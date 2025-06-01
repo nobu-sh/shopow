@@ -1,7 +1,7 @@
-/* eslint-disable react-refresh/only-export-components */
+import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
-import React from "react";
 
+/* eslint-disable react-refresh/only-export-components */
 export function randomSeed(): number {
   return Math.floor(Math.random() * 5237895289012);
 }

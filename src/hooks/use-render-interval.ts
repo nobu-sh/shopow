@@ -1,9 +1,9 @@
-import { DependencyList, useEffect, useState } from "react";
+import * as React from "react";
 
-export function useRenderInterval(interval: number, deps: DependencyList = []) {
-  const [, setFlipFlop] = useState(false);
+export function useRenderInterval(interval: number, deps: React.DependencyList = []) {
+  const [, setFlipFlop] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const intervalId = setInterval(() => {
       setFlipFlop((prev) => !prev);
     }, interval);

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 
 export function useDoAt(seconds: number | undefined | null, callback: React.EffectCallback, deps: React.DependencyList = []) {
   React.useEffect(() => {
@@ -12,6 +12,7 @@ export function useDoAt(seconds: number | undefined | null, callback: React.Effe
 
     return () => {
       clearTimeout(timer);
-    };
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds, callback, ...deps]);
 }

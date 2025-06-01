@@ -1,15 +1,15 @@
+import * as React from "react";
 import { cn, withRef } from "@udecode/cn";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useRenderInterval } from "../hooks/use-render-interval";
+import { useOnScroll } from "../hooks/use-on-scroll";
+import SloppyContainer from "./sloppy-container";
 
 import Logo from "../assets/logo.min.webp";
-import { useRenderInterval } from "../hooks/use-render-interval";
-import SloppyContainer from "./sloppy-container";
-import { useOnScroll } from "../hooks/use-on-scroll";
 
 const ResizingNavbarWrapper = withRef<"nav">(({ className, style, ...props }, reference) => {
-  const [fillBg, setFillBg] = useState(false);
-  const [fillAmount, setFillAmount] = useState(0);
+  const [fillBg, setFillBg] = React.useState(false);
+  const [fillAmount, setFillAmount] = React.useState(0);
 
   useOnScroll(() => {
     // Get window height if we have scrolled down 1 window height then enable fill background
