@@ -12,5 +12,5 @@ export function useOnScroll(effect: React.EffectCallback, deps: React.Dependency
       window.removeEventListener("scroll", handleScroll);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [effect, ...deps]);
+  }, deps);
 }

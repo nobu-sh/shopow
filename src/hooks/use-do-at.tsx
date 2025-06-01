@@ -14,5 +14,5 @@ export function useDoAt(seconds: number | undefined | null, callback: React.Effe
       clearTimeout(timer);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [seconds, callback, ...deps]);
+  }, [seconds, ...deps]);
 }

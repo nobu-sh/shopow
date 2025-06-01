@@ -72,7 +72,7 @@ export function useCanAutoplay(callback?: CanAutoplayCallback, deps: React.Depen
 
     callback?.(result);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result, callback, ...deps]);
+  }, [result, ...deps]);
 
   return result;
 }

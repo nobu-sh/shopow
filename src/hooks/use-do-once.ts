@@ -9,5 +9,5 @@ export function useDoOnce(test: boolean | undefined | null, callback: React.Effe
       didRun.current = true;
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [test, callback, ...deps]);
+  }, [test, ...deps]);
 }
