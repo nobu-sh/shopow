@@ -171,7 +171,6 @@ export interface SloppyContainerProps {
   sizeMode?: "widthParentHeightChildren" | "parent" | "children";
   className?: string;
   containerClassName?: string;
-  renderSvgOnTop?: boolean;
   asChild?: boolean;
 }
 
@@ -183,7 +182,6 @@ export default function SloppyContainer({
   borderRadius = 0,
   offsetFactor = 0.1,
   sizeMode = "widthParentHeightChildren",
-  renderSvgOnTop = false,
   containerClassName,
   className,
   asChild = false,
@@ -327,7 +325,7 @@ export default function SloppyContainer({
           top: 0,
           left: 0,
           pointerEvents: "none",
-          zIndex: renderSvgOnTop ? 1 : 0,
+          zIndex: 1,
         }}
       >
         <path
@@ -352,7 +350,7 @@ export default function SloppyContainer({
           width: "100%",
           height: "100%",
           display: "block",
-          zIndex: renderSvgOnTop ? 0 : 1,
+          zIndex: 0,
         }}
       >
         {children}

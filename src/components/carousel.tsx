@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import useEmblaCarousel, {
   type UseEmblaCarouselType
@@ -192,73 +190,10 @@ const CarouselItem = React.forwardRef<
 });
 CarouselItem.displayName = "CarouselItem";
 
-// const CarouselPrevious = React.forwardRef<
-//   HTMLButtonElement,
-//   React.ComponentProps<typeof Button>
-// >(({ className, variant = "none", size = "none", ...props }, reference) => {
-//   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
-
-//   return (
-//     <Button
-//       disabled={!canScrollPrev}
-//       ref={reference}
-//       size={size}
-//       variant={variant}
-//       className={cn(
-//         "absolute disabled:opacity-0 border-none rounded-none from-transparent to-neutral-950 opacity-50 hover:opacity-100 transition-all",
-//         orientation === "horizontal"
-//           ? "h-full w-12 left-0 top-0 bg-gradient-to-l"
-//           : "h-12 w-full left-0 top-0 bg-gradient-to-t",
-//         className
-//       )}
-//       onClick={scrollPrev}
-//       {...props}
-//     >
-//       <ArrowLeft
-//         className={cn("size-4", orientation === "vertical" && "rotate-90")}
-//       />
-//       <span className="sr-only">Previous slide</span>
-//     </Button>
-//   );
-// });
-// CarouselPrevious.displayName = "CarouselPrevious";
-
-// const CarouselNext = React.forwardRef<
-//   HTMLButtonElement,
-//   React.ComponentProps<typeof Button>
-// >(({ className, variant = "none", size = "none", ...props }, reference) => {
-//   const { orientation, scrollNext, canScrollNext } = useCarousel();
-
-//   return (
-//     <Button
-//       disabled={!canScrollNext}
-//       ref={reference}
-//       size={size}
-//       variant={variant}
-//       className={cn(
-//         "absolute disabled:opacity-0 border-none rounded-none from-transparent to-neutral-950 opacity-50 hover:opacity-100 transition-all",
-//         orientation === "horizontal"
-//           ? "h-full w-12 right-0 top-0 bg-gradient-to-r"
-//           : "h-12 w-full bottom-0 left-0 bg-gradient-to-b",
-//         className
-//       )}
-//       onClick={scrollNext}
-//       {...props}
-//     >
-//       <ArrowRight
-//         className={cn("size-4", orientation === "vertical" && "rotate-90")}
-//       />
-//       <span className="sr-only">Next slide</span>
-//     </Button>
-//   );
-// });
-//CarouselNext.displayName = "CarouselNext";
 
 export {
   type CarouselApi,
   Carousel,
   CarouselContent,
   CarouselItem,
-  // CarouselPrevious,
-  // CarouselNext
 };

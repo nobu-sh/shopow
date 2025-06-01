@@ -1,52 +1,44 @@
+import { cn } from "@udecode/cn";
+import { useRef, useState } from "react";
+import { ArrowDown, ExternalLink, MouseIcon } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem } from "../components/carousel";
+import { useRenderInterval } from "../hooks/use-render-interval";
+import { CarouselWorld, CarouselWorlds } from "../constants";
+import { useCanAutoplay } from "../hooks/use-can-autoplay";
+import SloppyContainer from "../components/sloppy-container";
+import Autoplay from "embla-carousel-autoplay";
+
 import HeaderVideo from "../assets/banner_vid.mp4"
 import HeaderVideoShort from "../assets/banner_short.mp4"
 import HeaderThumb from "../assets/header_thumb.webp"
 import VRCatStare from "../assets/vrcat-stare.webp"
 import VRCatHappy from "../assets/vrcat-happy.webp"
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@udecode/cn";
-import { useRecoilValue } from "recoil";
-import { readyState } from "../states/ready";
-import { ArrowDown, ExternalLink, MouseIcon } from "lucide-react";
-import SloppyContainer from "../components/container";
-import { Carousel, CarouselContent, CarouselItem } from "../components/carousel";
-import Autoplay from "embla-carousel-autoplay"
-import { useRenderInterval } from "../hooks/use-render-interval";
-import { CarouselWorld, CarouselWorlds } from "../constants";
+import { useBreakpoint } from "../hooks/use-breakpoint";
+import { useDoOnce } from "../hooks/use-do-once";
+import { useDoAt } from "../hooks/use-do-at";
 
 function HeaderVideoSection() {
-  const ready = useRecoilValue(readyState)
-  const [playing, setPlaying] = useState(false)
-  const [playNextAt, setPlayNextAt] = useState<number | null>(null)
+  const canAutoplay = useCanAutoplay();
+  const [playing, setPlaying] = useState(false);
+  const [playNextAt, setPlayNextAt] = useState<number | null>(null);
 
-  const refLong = useRef<HTMLVideoElement>(null)
-  const refShort = useRef<HTMLVideoElement>(null)
+  const refLong = useRef<HTMLVideoElement>(null);
+  const refShort = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    if (!ready) return;
+  useDoOnce(canAutoplay, () => {
     if (!refLong.current) return;
-    
     refLong.current.muted = false;
     refLong.current.volume = 0.15;
     refLong.current.play();
-  }, [ready])
+  });
 
-  useEffect(() => {
-    if (playNextAt === null) return;
-
-    // Start subtracting seconds from the play next at once it hits 0 we play the refLong then set play next at to null
-    const timeout = setTimeout(() => {
-      if (refLong.current) {
-        refLong.current.muted = true;
-        refLong.current.play();
-      }
-      setPlayNextAt(null);
-    }, playNextAt * 1000);
-
-    return () => {
-      clearTimeout(timeout);
+  useDoAt(playNextAt, () => {
+    if (refLong.current) {
+      refLong.current.muted = true;
+      refLong.current.play();
     }
-  }, [playNextAt])
+    setPlayNextAt(null);
+  });
 
   // h-[75vh] aspect-[2.5/1]
   return (
@@ -75,7 +67,8 @@ function HeaderVideoSection() {
           poster={HeaderThumb}
           src={HeaderVideo}
           onPlay={() => {
-            setPlaying(true)
+            if (playing) return;
+            setPlaying(true);
           }}
           onEnded={() => {
             if (refShort.current) {
@@ -105,7 +98,7 @@ function HeaderVideoSection() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
 function ScrollToViewMore() {
@@ -114,33 +107,16 @@ function ScrollToViewMore() {
       <MouseIcon className="sm:size-10 size-6 text-[#fde1af]" />
       <ArrowDown strokeWidth={2.5} className="sm:size-6 size-4 text-[#968161]" />
     </div>
-  )
+  );
 }
 
 function WorldDisplay({ world }: { world: CarouselWorld }) {
-  const [small, setSmall] = useState(false)
-  useRenderInterval(1000)
-
-  useEffect(() => {
-    const onResize = () => {
-      const isSmall = window.innerWidth < 640; // sm breakpoint
-      if (isSmall !== small) {
-        setSmall(isSmall);
-      }
-    }
-
-    window.addEventListener("resize", onResize)
-    onResize();
-
-    return () => {
-      window.removeEventListener("resize", onResize)
-    }
-  }, [setSmall, small])
+  const small = useBreakpoint("sm");
+  useRenderInterval(1000);
 
   return (
     <SloppyContainer
       containerClassName="group fill-transparent stroke-[#c0a87e] sm:stroke-[#968161] sm:hover:stroke-[#e6cb9e] p-2 transition cursor-pointer"
-      renderSvgOnTop
       sizeMode="parent"
       sloppiness={small ? 3.5 : 5}
       waviness={small ? 1.45 : 2}
@@ -163,7 +139,7 @@ function WorldDisplay({ world }: { world: CarouselWorld }) {
         </div>
       </a>
     </SloppyContainer>
-  )
+  );
 }
 
 function WorldsCarousel() {
@@ -185,7 +161,7 @@ function WorldsCarousel() {
         ))}
       </CarouselContent>
     </Carousel>
-  )
+  );
 }
 
 function AboutMe() {
@@ -204,11 +180,11 @@ function AboutMe() {
         className={cn("group relative right-[5%] lg:-right-[15%] xl:right-0 cursor-grab h-64 min-[450px]:h-48 lg:h-full", grabbing && "cursor-grabbing")}
         onMouseDown={(event) => {
           event.preventDefault();
-          setGrabbing(true)
+          setGrabbing(true);
         }} 
         onMouseUp={(event) => {
           event.preventDefault();
-          setGrabbing(false)
+          setGrabbing(false);
         }}
       >
         <img className="max-w-xl w-full ml-auto group-hover:opacity-0 absolute right-0 top-1/2 -translate-y-1/2" src={VRCatStare} alt="VRCatStare" />
@@ -216,7 +192,7 @@ function AboutMe() {
       </div>
     </div>
     </div>
-  )
+  );
 }
 
 // function FeaturedWorks() {
@@ -272,7 +248,7 @@ function Footer() {
         <ExternalLink className="size-3" />
       </a>
     </footer>
-  )
+  );
 }
 
 export default function Home() {
@@ -290,5 +266,5 @@ export default function Home() {
       {/* <ContactMe /> */}
       <Footer />
     </div>
-  )
+  );
 }
