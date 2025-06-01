@@ -158,7 +158,7 @@ function WorldsCarousel() {
       ]}>
       <CarouselContent className="sm:-ml-6 -ml-2">
         {CarouselWorlds.map((world, index) => (
-          <CarouselItem key={index} className="aspect-video size-full sm:pl-6 pl-2 max-w-[36rem] min-w-[18rem] basis-[60%]">
+          <CarouselItem key={index} className="aspect-video size-full sm:pl-6 pl-2 max-w-[36rem] min-w-[16rem] basis-[60%]">
             <WorldDisplay world={world} />
           </CarouselItem>
         ))}
