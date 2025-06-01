@@ -1,7 +1,7 @@
 import * as React from "react";
 import TinyTestVideo from "../assets/tiny.mp4?inline";
 
-const InteractionEvents = ["click", "keydown"] as const;
+const InteractionEvents = ["click", "touchstart", "keydown", "mousedown", "pointerdown"] as const;
 
 export interface CanAutoplay {
   result: boolean | null;
@@ -15,31 +15,45 @@ export const CanAutoplayProvider = ({ children }: React.PropsWithChildren) => {
   const [canAutoplay, setCanAutoplay] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
+    let timeout: number | null = null;
+    const tryPlay = () => {
+      timeout = null;
+      const video = document.createElement("video");
+      video.src = TinyTestVideo;
+      video.muted = false;
+      video.playsInline = true;
+      video.play()
+        .then(() => {
+          console.debug("[CanAutoplayProvider] autoplay now allowed!");
+          setCanAutoplay(true);
+          cleanup();
+        })
+        .catch(() => {
+          console.debug("[CanAutoplayProvider] autoplay not allowed! waiting for user interaction.");
+          setCanAutoplay(false);
+        });
+    }
+
+  
     const onInteract = () => {
       console.debug("[CanAutoplayProvider] user interaction detected, testing autoplay with audio.");
-      InteractionEvents.forEach(event => document.removeEventListener(event, onInteract));
-      // Yield to the event loop to ensure browser has time to process the interaction
-      setTimeout(() => {
-        setCanAutoplay(true);
-      }, 0);
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(tryPlay, 25);
+    }
+
+    const cleanup = () => {
+      InteractionEvents.forEach(event =>
+        document.removeEventListener(event, onInteract)
+      );
     };
 
-    const video = document.createElement("video");
-    video.muted = false;
-    video.playsInline = true;
-    video.src = TinyTestVideo;
+    tryPlay();
+    InteractionEvents.forEach(event => 
+      document.addEventListener(event, onInteract)
+    );
 
-    video.play()
-      .then(() => {
-        console.debug("[CanAutoplayProvider] current context can autoplay with audio.");
-        setCanAutoplay(true);
-      })
-      .catch(() => {
-        console.debug("[CanAutoplayProvider] current context cannot autoplay with audio, waiting for user interaction.");
-        setCanAutoplay(false);
-        InteractionEvents.forEach(event => document.addEventListener(event, onInteract, { once: true }));
-      });    
-  }, [])
+    return cleanup;
+  }, []);
 
   return (
     <CanAutoplayContext.Provider value={{ result: canAutoplay }}>
