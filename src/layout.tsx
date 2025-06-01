@@ -159,9 +159,9 @@ const NavbarWrapper = withRef<"nav">(({ className, style, ...props }, reference)
       {...props}
       ref={reference}
       className={cn(
-        "fixed select-none top-0 left-0 w-screen z-40 h-32 transition-[height] duration-500 flex flex-row justify-between items-center bg-gradient-to-b from-[#000d04aa] to-transparent px-16",
+        "fixed select-none top-0 left-0 w-screen z-40 lg:h-32 h-20 transition-[height] duration-500 flex flex-row items-center bg-gradient-to-b from-[#000d04aa] to-transparent lg:px-16 px-4",
         // fillBg && "from-[#000d04ee] to-[#000d04ee] h-20 backdrop-blur-sm",
-        fillBg && "from-transparent to-transparent h-20 backdrop-blur-sm",
+        fillBg && "from-transparent to-transparent !h-20 backdrop-blur-sm",
         className
       )} 
       style={{
@@ -175,15 +175,30 @@ const NavbarWrapper = withRef<"nav">(({ className, style, ...props }, reference)
 function Navbar() {
   return (
     <NavbarWrapper>
-      <div className="flex flex-row items-center gap-16">
-        <Link to="/#home" className="transition duration-300 hover:sepia hover:brightness-75">
-          <img src={Logo} alt="Shopow" className="h-14 w-auto" />
+      <div className="flex flex-row items-center lg:gap-16 gap-8">
+        <Link 
+          className="transition duration-300 hover:sepia hover:brightness-75"
+          to="/"
+          onClick={() => {
+            // Scroll to top when clicking the logo
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
+          <img src={Logo} alt="Shopow" className="lg:h-14 h-10 w-auto" />
         </Link>
-        <Link to="/#about" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">About Me</Link>
-        <Link to="/#featured" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">Featured Works</Link>
-        {/* <Link to="/#projects" className="font-fun transition duration-300 hover:text-[#fde1af]">Projects</Link> */}
+        <div className="lg:contents hidden">
+          <Link to="/#about" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">About Me</Link>
+          {/* <Link to="/#featured" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">Featured Works</Link> */}
+          {/* <Link to="/#projects" className="font-fun transition duration-300 hover:text-[#fde1af]">Projects</Link> */}
+        </div>
       </div>
-      <GetInTouch />
+
+      <div className="ml-auto lg:block hidden">
+        <GetInTouch />
+      </div>
+      {/* <button className="lg:hidden flex ml-auto">
+        <Menu className="size-7" />
+      </button> */}
     </NavbarWrapper>
   )
 }
