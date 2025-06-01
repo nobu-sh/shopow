@@ -1,7 +1,7 @@
 import * as React from "react";
 import TinyTestVideo from "../assets/tiny.mp4?inline";
 
-const InteractionEvents = ["click", "touchstart", "keydown", "mousedown", "pointerdown"] as const;
+const InteractionEvents = ["click", "keydown"] as const;
 
 export interface CanAutoplay {
   result: boolean | null;
@@ -18,7 +18,10 @@ export const CanAutoplayProvider = ({ children }: React.PropsWithChildren) => {
     const onInteract = () => {
       console.debug("[CanAutoplayProvider] user interaction detected, testing autoplay with audio.");
       InteractionEvents.forEach(event => document.removeEventListener(event, onInteract));
-      setCanAutoplay(true);
+      // Yield to the event loop to ensure browser has time to process the interaction
+      setTimeout(() => {
+        setCanAutoplay(true);
+      }, 0);
     };
 
     const video = document.createElement("video");
