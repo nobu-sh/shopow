@@ -22,9 +22,12 @@
     scroll-behavior: smooth;
   }
 
+  body {
+    @apply selection:bg-[#282521];
+  }
+
   :root {
     font-size: 16px;
-
   }
   
   /* 2k monitors */

@@ -174,13 +174,13 @@ function AboutMe() {
     <section data-hash="about-me" className="flex flex-col lg:p-16 p-4 items-center overflow-hidden">
       <div className="w-full grid lg:grid-cols-2 lg:gap-0 max-[440px]:gap-4 gap-24 grid-cols-1 items-center max-w-[84rem]">
         <div className="flex flex-col sm:gap-4 gap-2 text-[#a5967e] *:max-w-xl sm:text-lg h-fit">
-          <h2 className="sm:text-4xl text-2xl font-bold mb-2 font-fun text-[#e6d0af]">About Me</h2>
+          <h2 className="sm:text-4xl text-2xl font-bold mb-2 font-fun text-[#e6d0af] select-none">About Me</h2>
           <p>With 2+ years of experience in immersive 3D world design, I specialize in crafting standout environments for VR—especially VRChat. My work blends technical precision with creative flair, and has been recognized across the VRChat community and beyond.</p>
           <p>I’ve built 25+ worlds—five officially VRChat-approved—including hits like <i>Crypt Babylonica</i> and <i>Aeterna Visio Nocturne</i>. Several reached #1 on the Popular tab, with three surpassing 100k visits and 10k favorites. Collectively, my projects have drawn over 1 million visits and have been featured in VRChat promo materials, developer updates, and the Pico 4 launch.</p>
           <p>My collaborations span HashStudios LLC, Dubby.gg, VR events like VKET Winter 2024, and galleries in Tokyo and London. I’ve also led a VRChat community of 3,000+, run a Creator Economy Store, and been honored with awards including Spookality (twice) and VRCA 2024 nominations.</p>
         </div>
         <div 
-          className={cn("group relative right-[5%] lg:-right-[15%] xl:right-0 cursor-grab h-64 min-[450px]:h-48 lg:h-full", grabbing && "cursor-grabbing")}
+          className={cn("group relative select-none right-[5%] lg:-right-[15%] xl:right-0 cursor-grab h-64 min-[450px]:h-48 lg:h-full", grabbing && "cursor-grabbing")}
           onMouseDown={(event) => {
             event.preventDefault();
             setGrabbing(true);
