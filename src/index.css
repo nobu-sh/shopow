@@ -23,7 +23,7 @@
   }
 
   body {
-    @apply selection:bg-[#282521];
+    @apply selection:bg-[#e6d0af30];
   }
 
   :root {
