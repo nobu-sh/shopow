@@ -42,7 +42,7 @@ function HeaderVideoSection() {
 
   // h-[75vh] aspect-[2.5/1]
   return (
-    <header className="relative select-none flex w-full flex-col min-h-[24rem] sm:min-h-[32rem] aspect-[2.5/1] sm:h-[78vh]" id="home">
+    <header className="relative select-none flex w-full flex-col min-h-[24rem] sm:min-h-[32rem] aspect-[2.5/1] sm:h-[78vh]">
       <div className="sm:header-video-mask header-video-mask-mobile absolute size-full">
         <video
           ref={refShort}
@@ -145,6 +145,9 @@ function WorldDisplay({ world }: { world: CarouselWorld }) {
 function WorldsCarousel() {
   return (
     <Carousel 
+      data-hash="vrchat-worlds"
+      data-scroll-origin="center"
+      data-scroll-position="1/2"
       className="w-full select-none sm:mb-0 sm:mt-0 -my-4 -mt-16" 
       opts={{ loop: true, dragFree: true }} 
       plugins={[
@@ -168,7 +171,7 @@ function AboutMe() {
   const [grabbing, setGrabbing] = React.useState(false);
 
   return (
-    <div className="flex flex-col lg:p-16 p-4 items-center overflow-hidden">
+    <section data-hash="about-me" className="flex flex-col lg:p-16 p-4 items-center overflow-hidden">
       <div className="w-full grid lg:grid-cols-2 lg:gap-0 max-[440px]:gap-4 gap-24 grid-cols-1 items-center max-w-[84rem]">
         <div className="flex flex-col sm:gap-4 gap-2 text-[#a5967e] *:max-w-xl sm:text-lg h-fit">
           <h2 className="sm:text-4xl text-2xl font-bold mb-2 font-fun text-[#e6d0af]">About Me</h2>
@@ -191,7 +194,7 @@ function AboutMe() {
           <img className="max-w-xl w-full ml-auto opacity-0 group-hover:opacity-100 absolute right-0 top-1/2 -translate-y-1/2" src={VRCatHappy} alt="VRCatHappy" />
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

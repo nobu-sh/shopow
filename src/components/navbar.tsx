@@ -6,6 +6,7 @@ import { useOnScroll } from "../hooks/use-on-scroll";
 import SloppyContainer from "./sloppy-container";
 
 import Logo from "../assets/logo.min.webp";
+import { scrollToHash } from "../utils/scroll-to-hash";
 
 const ResizingNavbarWrapper = withRef<"nav">(({ className, style, ...props }, reference) => {
   const [fillBg, setFillBg] = React.useState(false);
@@ -62,6 +63,11 @@ function GetInTouch() {
 }
 
 export function Navbar() {
+  // On load handle scrolling to the relevant section if the URL has a hash
+  React.useEffect(() => {
+    scrollToHash(window.location.hash);
+  }, []);
+
   return (
     <ResizingNavbarWrapper>
       <div className="flex flex-row items-center lg:gap-16 gap-8">
@@ -76,7 +82,7 @@ export function Navbar() {
           <img src={Logo} alt="Shopow" className="lg:h-14 h-10 w-auto" />
         </Link>
         <div className="lg:contents hidden">
-          <Link to="/#about" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">About Me</Link>
+          <Link to="/#about-me" onClick={() => scrollToHash("about-me")} className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">About Me</Link>
           {/* <Link to="/#featured" className="font-fun transition duration-300 hover:text-[#fde1af] text-neutral-200">Featured Works</Link> */}
           {/* <Link to="/#projects" className="font-fun transition duration-300 hover:text-[#fde1af]">Projects</Link> */}
         </div>
