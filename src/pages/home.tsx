@@ -265,7 +265,7 @@ function ContactMe() {
           <div className="flex flex-col gap-16 text-[#a5967e] *:max-w-xl sm:text-lg h-fit">
             <div className="flex flex-col gap-4">
               <h2 className="sm:text-2xl text-xl font-bold font-fun text-left text-[#e6d0af] select-none">What I Can Do For You</h2>
-              <p>I create visually striking and technically sound 3D environments for games, virtual experiences, and interactive media. I build worlds that tell stories—whether in Unity, Unreal, or Blender. Need optimized assets, immersive level design, or a complete virtual space? I deliver end-to-end solutions tailored to your vision.</p>
+              <p>I create visually striking and technically sound 3D environments for games, virtual experiences, and interactive media. I build worlds that tell stories in Unity. Need optimized assets, immersive level design, or a complete virtual space? I deliver end-to-end solutions tailored to your vision.</p>
             </div>
             <div className="flex flex-col gap-6">
               <h2 className="sm:text-2xl text-xl font-bold font-fun text-left text-[#e6d0af] select-none">Keep Up With My Socials</h2>
