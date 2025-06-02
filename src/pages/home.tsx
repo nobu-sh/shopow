@@ -2,20 +2,31 @@ import * as React from "react";
 import { cn } from "@udecode/cn";
 import { ArrowDown, ExternalLink, MouseIcon } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem } from "../components/carousel";
-import { useRenderInterval } from "../hooks/use-render-interval";
+import { useInterval, useRenderInterval } from "../hooks/use-render-interval";
 import { CarouselWorld, CarouselWorlds } from "../constants";
 import { useCanAutoplay } from "../hooks/use-can-autoplay";
 import { useBreakpoint } from "../hooks/use-breakpoint";
 import { useDoOnce } from "../hooks/use-do-once";
 import { useDoAt } from "../hooks/use-do-at";
-import SloppyContainer from "../components/sloppy-container";
+import SloppyContainer, { randomSeed } from "../components/sloppy-container";
 import Autoplay from "embla-carousel-autoplay";
+
+import { SocialIcon } from "react-social-icons/component";
+import "react-social-icons/x";
+import "react-social-icons/discord";
+import "react-social-icons/tiktok";
+import "react-social-icons/youtube";
+import "react-social-icons/instagram";
+import "react-social-icons/linkedin";
+import "react-social-icons/linktree";
 
 import HeaderVideo from "../assets/banner_vid.mp4";
 import HeaderVideoShort from "../assets/banner_short.mp4";
 import HeaderThumb from "../assets/header_thumb.webp";
 import VRCatStare from "../assets/vrcat-stare.webp";
 import VRCatHappy from "../assets/vrcat-happy.webp";
+import { isValidEmail } from "../utils/email";
+import { sendInquiry } from "../utils/webhook";
 
 function HeaderVideoSection() {
   const canAutoplay = useCanAutoplay();
@@ -198,49 +209,158 @@ function AboutMe() {
   );
 }
 
-// function FeaturedWorks() {
-//   return (
-//     <div className="flex flex-col p-16 items-center bg-gradient-to-b from-[#000d04] via-[#001204] to-[#000d04]">
-//       <div className="flex flex-col gap-8 w-full max-w-[84rem]">
-//         <h2 className="font-fun text-4xl mb-2 text-right font-bold text-[#e6d0af]">Featured Works</h2>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//       </div>
-//     </div>
-//   )
-// }
+// Use seeded generation for these so when the user types it doesn't change every time.
+function InputContainer({ children }: React.PropsWithChildren) {
+  const seed = useInterval(1000, () => randomSeed());
 
-// function ContactMe() {
-//   return (
-//     <div className="flex flex-col p-16 items-center">
-//       <div className="flex flex-col gap-8 w-full max-w-[84rem]">
-//         <h2 className="font-fun text-4xl mb-2 text-center font-bold text-[#e6d0af]">Get In Touch</h2>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//         <div></div>
-//       </div>
-//     </div>
-//   )
-// }
+  return (
+    <SloppyContainer
+      containerClassName="relative fill-[#96816120] transition duration-300 stroke-[#fde1af99] focus-within:stroke-[#fde1af] focus-within:fill-[#96816125]"
+      sizeMode="widthParentHeightChildren"
+      sloppiness={3}
+      waviness={1.5}
+      strokeWidth={2}
+      borderRadius={15}
+      seed={seed}
+    >
+      {children}
+    </SloppyContainer>
+  )
+}
+
+function ButtonContainer({ children, disabled = false }: React.PropsWithChildren<{ disabled?: boolean }>) {
+  const seed = useInterval(1000, () => randomSeed());
+
+  return (
+    <SloppyContainer
+      containerClassName={cn(
+        "ml-auto fill-transparent transition duration-300 stroke-[#fde1af99] hover:stroke-[#fde1af] hover:fill-[#96816125]",
+        disabled && "pointer-events-none !opacity-50"
+      )}
+      sizeMode="children"
+      sloppiness={3}
+      waviness={1.5}
+      strokeWidth={2}
+      borderRadius={15}
+      seed={seed}
+      asChild
+    >
+      {children}
+    </SloppyContainer>
+  )
+}
+
+function ContactMe() {
+  const [sending, setSending] = React.useState(false);
+  const [sent, setSent] = React.useState(false);
+  const [failed, setFailed] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [message, setMessage] = React.useState("");
+
+  return (
+    <section data-hash="contact" className="flex flex-col lg:p-16 p-4 items-center bg-gradient-to-b from-[#000d04] via-[#001204] to-[#000d04]">
+      <div className="flex flex-col sm:gap-16 gap-12 max-w-[84rem] w-full">
+        <h2 className="sm:text-4xl text-2xl font-bold mb-2 font-fun text-[#e6d0af] select-none">Interested in Me?</h2>
+        <div className="w-full grid lg:grid-cols-[1fr_0.75fr] grid-cols-1 sm:gap-32 gap-16">
+          <div className="flex flex-col gap-16 text-[#a5967e] *:max-w-xl sm:text-lg h-fit">
+            <div className="flex flex-col gap-4">
+              <h2 className="sm:text-2xl text-xl font-bold font-fun text-left text-[#e6d0af] select-none">What I Can Do For You</h2>
+              <p>I create visually striking and technically sound 3D environments for games, virtual experiences, and interactive media. I build worlds that tell stories—whether in Unity, Unreal, or Blender. Need optimized assets, immersive level design, or a complete virtual space? I deliver end-to-end solutions tailored to your vision.</p>
+            </div>
+            <div className="flex flex-col gap-6">
+              <h2 className="sm:text-2xl text-xl font-bold font-fun text-left text-[#e6d0af] select-none">Keep Up With My Socials</h2>
+              <div className="sm:flex sm:flex-row sm:items-center sm:gap-8 grid grid-cols-6">
+                <SocialIcon 
+                  url="https://x.com/ShopowVR"
+                  borderRadius="25%"
+                  className="hover:scale-110 transition-all"
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                />
+                <SocialIcon
+                  url="https://www.tiktok.com/@shopow"
+                  borderRadius="25%"
+                  className="hover:scale-110 transition-all"
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                />
+                <SocialIcon
+                  url="https://www.youtube.com/@shopowvr"
+                  borderRadius="25%"
+                  className="hover:scale-110 transition-all"
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                />
+                <SocialIcon
+                  url="https://www.instagram.com/sho.pow"
+                  borderRadius="25%"
+                  className="hover:scale-110 transition-all"
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                />
+                <SocialIcon
+                  url="https://www.linkedin.com/in/angelo-lanticse-peralta-ab1580265"
+                  className="hover:scale-110 transition-all"
+                  borderRadius="25%"
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                />
+                <SocialIcon
+                  url="https://linktr.ee/Shopow"
+                  network="linktree"
+                  borderRadius="25%"
+                  className="hover:scale-110 transition-all"
+                  style={{ width: "2.5rem", height: "2.5rem" }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-4">
+            <h2 className="sm:text-2xl text-xl font-bold font-fun text-left text-[#e6d0af] select-none">Get in Touch</h2>
+            <form className="flex flex-col gap-4" onSubmit={async (event) => {
+              event.preventDefault();
+              setSending(true);
+              
+              try {
+                await sendInquiry(email, message);
+                setSent(true);
+              } catch {
+                setFailed(true);
+              }
+
+              setSending(false);
+            }}>
+              <InputContainer>
+                <input 
+                  className="!bg-transparent !border-none !outline-none text-[#e6d0af] placeholder:text-[#e6d0af75] px-4 py-4"
+                  type="email"
+                  placeholder="email"
+                  readOnly={sending || sent || failed}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="email"
+                />
+              </InputContainer>
+              <InputContainer>
+                <textarea
+                  className="min-h-52 w-full !bg-transparent !border-none !outline-none text-[#e6d0af] placeholder:text-[#e6d0af75] px-4 py-4"
+                  placeholder="Reason of contact..."
+                  readOnly={sending || sent || failed}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  autoComplete="off"
+                  maxLength={2048}
+                />
+                <p className="absolute bottom-4 right-4 font-fun text-xs pointer-events-none text-[#e6d0afbb]">{2048 - message.length}</p>
+              </InputContainer>
+              <div className="flex flex-row gap-4 items-center">
+                {failed && <p className="text-red-500/75">You cannot send at this time!</p>}
+                <ButtonContainer disabled={!isValidEmail(email) || sending || sent || failed}>
+                  <button type="submit" className="font-fun px-6 py-4 text-lg text-[#fde1af] !w-44">{sent ? "Sent!" : "Send Inquiry"}</button>
+                </ButtonContainer>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 function Footer() {
   return (
@@ -265,8 +385,7 @@ export default function Home() {
         <WorldsCarousel />
       </div>
       <AboutMe />
-      {/* <FeaturedWorks /> */}
-      {/* <ContactMe /> */}
+      <ContactMe />
       <Footer />
     </div>
   );

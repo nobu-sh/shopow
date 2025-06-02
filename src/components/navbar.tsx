@@ -57,7 +57,7 @@ function GetInTouch() {
       borderRadius={15}
       asChild
     >
-      <Link to="/#contact" className="font-fun px-6 py-4 text-lg text-[#fde1af]">Get in Touch</Link>
+      <Link to="/#contact" onClick={() => scrollToHash("contact")} className="font-fun px-6 py-4 text-lg text-[#fde1af]">Get in Touch</Link>
     </SloppyContainer>
   );
 }
