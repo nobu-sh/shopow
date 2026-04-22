@@ -365,7 +365,7 @@ function ContactMe() {
 function Footer() {
   return (
     <footer className="mt-auto select-none w-full lg:p-16 p-4 lg:pb-8 bg-gradient-to-b gap-1 from-transparent to-black flex lg:flex-row flex-col items-center">
-      <p className="text-xs text-[#a08e6f] font-fun">© Shopow 2025 - All Rights Reserved</p>
+      <p className="text-xs text-[#a08e6f] font-fun">© Shopow 2026 - All Rights Reserved</p>
       <a href="https://github.com/nobu-sh/shopow" target="_blank" className="flex transition text-[#8f516c] hover:text-[#e594b7] flex-row gap-2 lg:ml-auto" aria-label="View source code on GitHub">
         <p className="text-xs font-fun">made with {"<3"} by nobu-sh</p>
         <ExternalLink className="size-3" />
